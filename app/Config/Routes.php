@@ -14,3 +14,17 @@ $routes->post('/signup/register', 'Auth::register');
 $routes->get('/login', 'Auth::login');
 
 $routes->post('/login/authenticate', 'Auth::authenticate');
+
+$routes->get('/dashboard', 'Auth::dashboard');
+
+$routes->get('/logout', 'Auth::logout');
+
+
+
+$routes->get('/admin/dashboard', 'Auth::adminDashboard');
+
+$routes->get('/admin/login', 'Auth::adminLogin');
+
+$routes->post('/admin/login/authenticate', 'Auth::adminAuthenticate');
+
+$routes->get('/admin/logout', 'Auth::adminLogout');

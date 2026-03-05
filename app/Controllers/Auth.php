@@ -32,7 +32,7 @@ class Auth extends BaseController
 
         $model = new UserModel();
 
-        
+
         if ($model->getUserByEmail($this->request->getPost('email'))) {
             return "Error: Email already registered.";
         }
@@ -81,5 +81,92 @@ class Auth extends BaseController
         }
 
         return "Error: Invalid email or password.";
+    }
+
+    public function logout()
+    {
+        $session = session();
+        $session->destroy();
+        return redirect()->to('/login');
+    }
+
+    public function adminLogin(): string
+    {
+        return view('auth/adminlogin');
+    }
+
+    public function adminAuthenticate()
+    {
+        $session = session();
+        $model = new UserModel();
+        $email = $this->request->getPost('email');
+        $password = $this->request->getPost('password');
+
+        $user = $model->getUserByEmail($email);
+
+        if ($user) {
+            // Verify password
+            if (password_verify($password, $user['password'] ?? '')) {
+                // Verify role is admin
+                if (($user['role'] ?? '') !== 'admin') {
+                    return "Error: Unauthorized access. Admin role required.";
+                }
+
+
+                $ses_data = [
+                    'userId' => $user['id'],
+                    'userName' => $user['name'],
+                    'userEmail' => $user['email'],
+                    'userRole' => $user['role'],
+                    'isLoggedIn' => TRUE
+                ];
+                $session->set($ses_data);
+
+                return redirect()->to('/admin/dashboard');
+            }
+        }
+
+        return "Error: Invalid email or password.";
+    }
+
+    public function adminLogout()
+    {
+        $session = session();
+        $session->destroy();
+        return redirect()->to('/admin/login');
+    }
+
+    public function dashboard()
+    {
+        $session = session();
+        if (!$session->get('isLoggedIn')) {
+            return redirect()->to('/login');
+        }
+
+        $data = [
+            'userName' => $session->get('userName'),
+            'userEmail' => $session->get('userEmail'),
+            'userRole' => $session->get('userRole')
+        ];
+
+        return view('auth/dashboard', $data);
+    }
+
+    public function adminDashboard()
+    {
+        $session = session();
+        if (!$session->get('isLoggedIn') || $session->get('userRole') !== 'admin') {
+            return redirect()->to('/admin/login');
+        }
+
+        $model = new UserModel();
+        // Just for example, we'll fetch some data if needed later
+
+        $data = [
+            'adminName' => $session->get('userName'),
+            'adminEmail' => $session->get('userEmail')
+        ];
+
+        return view('auth/adminDashboard', $data);
     }
 }

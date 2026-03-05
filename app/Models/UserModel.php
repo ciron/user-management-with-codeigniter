@@ -27,12 +27,29 @@ class UserModel
 
     public function insertUser($data)
     {
+        if (!isset($data['id'])) {
+            $data['id'] = $this->generateUUID();
+        }
+
         $columns = implode(', ', array_keys($data));
         $values = implode(', ', array_map(function ($val) {
-            return is_string($val) ? "'" . addslashes($val) . "'" : $val;
+            if (is_numeric($val) && !is_string($val))
+                return $val;
+            return "'" . addslashes($val) . "'";
         }, array_values($data)));
 
         $sql = "INSERT INTO users ($columns) VALUES ($values)";
         return $this->db->execute($sql);
+    }
+
+    private function generateUUID()
+    {
+        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000,
+            mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+        );
     }
 }
