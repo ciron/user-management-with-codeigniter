@@ -417,7 +417,7 @@
                                     <input type="password" class="form-control" name="password" 
                                            id="password" placeholder="Enter new password">
                                 </div>
-                                <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+                                <!-- <i class="fas fa-eye password-toggle" id="togglePassword"></i> -->
                             </div>
                             <div class="password-strength" id="passwordStrength"></div>
                             <div class="form-text text-muted small mt-2">
@@ -439,7 +439,7 @@
                                     <input type="password" class="form-control" name="confirm_password" 
                                            id="confirm_password" placeholder="Confirm new password">
                                 </div>
-                                <i class="fas fa-eye password-toggle" id="toggleConfirmPassword"></i>
+                                <!-- <i class="fas fa-eye password-toggle" id="toggleConfirmPassword"></i> -->
                             </div>
                             <div class="form-text small mt-2" id="passwordMatchMsg">
                                 <i class="fas fa-circle me-1"></i> 
@@ -474,21 +474,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-    // Password visibility toggle - Fixed position
-    $('#togglePassword').click(function() {
-        const passwordField = $('#password');
-        const type = passwordField.attr('type') === 'password' ? 'text' : 'password';
-        passwordField.attr('type', type);
-        $(this).toggleClass('fa-eye fa-eye-slash');
-    });
-
-    $('#toggleConfirmPassword').click(function() {
-        const confirmField = $('#confirm_password');
-        const type = confirmField.attr('type') === 'password' ? 'text' : 'password';
-        confirmField.attr('type', type);
-        $(this).toggleClass('fa-eye fa-eye-slash');
-    });
-
+  
     // Password strength checker
     $('#password').on('input', function() {
         const password = $(this).val();

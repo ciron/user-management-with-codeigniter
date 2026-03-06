@@ -13,7 +13,7 @@
             background: #1e293b;
             color: #fff;
             padding: 1rem;
-            height: 100vh;
+            height: 150vh;
             width: 220px;
             float: left;
         }
