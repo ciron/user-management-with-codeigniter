@@ -434,11 +434,7 @@
             <ul>
                 <!-- active state indicates dashboard (main section) -->
                 <li class="active"><a href="#" class="nav-link"><i class="fas fa-th-large"></i> <span>Dashboard</span></a></li>
-                <li><a href="#" class="nav-link"><i class="fas fa-table"></i> <span>Data views</span></a></li>
-                <li><a href="#" class="nav-link"><i class="fas fa-chart-line"></i> <span>Analytics</span></a></li>
-                <li><a href="#" class="nav-link"><i class="fas fa-users"></i> <span>Clients</span></a></li>
-                <li><a href="#" class="nav-link"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
-                <li><a href="#" class="nav-link"><i class="fas fa-file-alt"></i> <span>Reports</span></a></li>
+                <li><a href="#" class="nav-link"><i class="fas fa-user"></i> <span>Clients</span></a></li>
             </ul>
         </nav>
 
@@ -463,137 +459,9 @@
             </div>
         </div>
 
-        <!-- small kpi cards (nice surrounding) -->
-        <div class="stats-cards">
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-database"></i></div>
-                <div class="stat-content">
-                    <h3>248</h3>
-                    <p>total entries</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-user-check"></i></div>
-                <div class="stat-content">
-                    <h3>1,245</h3>
-                    <p>active users</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-chart-simple"></i></div>
-                <div class="stat-content">
-                    <h3>23</h3>
-                    <p>new today</p>
-                </div>
-            </div>
-        </div>
+      
 
-        <!-- DATATABLE CARD (clean design) -->
-        <div class="table-container">
-            <div class="table-header">
-                <h2><i class="fas fa-list-ul"></i> Orders & customers</h2>
-                <div class="table-controls">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search records...">
-                    </div>
-                    <div class="filter-btn"><i class="fas fa-sliders-h"></i> Filter</div>
-                </div>
-            </div>
-
-            <!-- the actual data table -->
-            <table class="datatable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Customer</th>
-                        <th>Product</th>
-                        <th>Status</th>
-                        <th>Amount</th>
-                        <th>Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><b>#OR954</b></td>
-                        <td>Olivia Chen</td>
-                        <td>Ergo Monitor</td>
-                        <td><span class="badge success">completed</span></td>
-                        <td>$412.00</td>
-                        <td>2025-02-18</td>
-                        <td class="actions"><i class="far fa-eye"></i> <i class="far fa-edit"></i></td>
-                    </tr>
-                    <tr>
-                        <td><b>#OR955</b></td>
-                        <td>Michael Rostov</td>
-                        <td>Wireless KB</td>
-                        <td><span class="badge warning">pending</span></td>
-                        <td>$89.00</td>
-                        <td>2025-02-17</td>
-                        <td class="actions"><i class="far fa-eye"></i> <i class="far fa-edit"></i></td>
-                    </tr>
-                    <tr>
-                        <td><b>#OR956</b></td>
-                        <td>Zara Hassan</td>
-                        <td>Laptop stand</td>
-                        <td><span class="badge success">shipped</span></td>
-                        <td>$159.90</td>
-                        <td>2025-02-16</td>
-                        <td class="actions"><i class="far fa-eye"></i> <i class="far fa-edit"></i></td>
-                    </tr>
-                    <tr>
-                        <td><b>#OR957</b></td>
-                        <td>James Wu</td>
-                        <td>4K webcam</td>
-                        <td><span class="badge">processing</span></td>
-                        <td>$210.45</td>
-                        <td>2025-02-16</td>
-                        <td class="actions"><i class="far fa-eye"></i> <i class="far fa-edit"></i></td>
-                    </tr>
-                    <tr>
-                        <td><b>#OR958</b></td>
-                        <td>Elena Costa</td>
-                        <td>Dock station</td>
-                        <td><span class="badge success">completed</span></td>
-                        <td>$327.70</td>
-                        <td>2025-02-15</td>
-                        <td class="actions"><i class="far fa-eye"></i> <i class="far fa-edit"></i></td>
-                    </tr>
-                    <tr>
-                        <td><b>#OR959</b></td>
-                        <td>David Park</td>
-                        <td>Noise headset</td>
-                        <td><span class="badge warning">backorder</span></td>
-                        <td>$94.99</td>
-                        <td>2025-02-14</td>
-                        <td class="actions"><i class="far fa-eye"></i> <i class="far fa-edit"></i></td>
-                    </tr>
-                    <tr>
-                        <td><b>#OR960</b></td>
-                        <td>Nadia Kline</td>
-                        <td>USB-C hub</td>
-                        <td><span class="badge success">delivered</span></td>
-                        <td>$72.50</td>
-                        <td>2025-02-13</td>
-                        <td class="actions"><i class="far fa-eye"></i> <i class="far fa-edit"></i></td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <!-- footer with pagination (static for design) -->
-            <div class="footer-info">
-                <div>Showing 1‒7 of 24 results</div>
-                <div class="pagination">
-                    <span class="page-item"><i class="fas fa-chevron-left"></i></span>
-                    <span class="page-item active-page">1</span>
-                    <span class="page-item">2</span>
-                    <span class="page-item">3</span>
-                    <span class="page-item">4</span>
-                    <span class="page-item"><i class="fas fa-chevron-right"></i></span>
-                </div>
-            </div>
-        </div>
+      
     </main>
 </div>
 <!-- subtle extra: ensures no external library, just design -->

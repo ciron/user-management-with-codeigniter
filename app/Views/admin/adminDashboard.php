@@ -109,7 +109,7 @@
         .table-container {
             margin: 0 30px 30px; background: white; border-radius: 28px;
             border: 1px solid #e2eaf2; box-shadow: 0 18px 36px -14px rgba(20,40,70,0.12);
-            overflow: hidden; padding: 20px 24px 28px;
+            padding: 20px 24px 28px;
         }
         .table-header {
             display: flex; justify-content: space-between; align-items: center;
@@ -178,7 +178,7 @@
         </nav>
         <div class="menu-footer">
             <i class="fas fa-circle-user"></i>
-            <span>admin@userhub</span>
+            <span><?= esc($adminEmail) ?></span>
         </div>
     </aside>
 
@@ -197,25 +197,25 @@
         </div>
 
         <!-- KPI cards (static for design) -->
-        <div class="stats-cards">
+         <div class="stats-cards">
             <div class="stat-card">
                 <div class="stat-icon"><i class="fas fa-user-clock"></i></div>
                 <div class="stat-content">
-                    <h3>18</h3>
+                    <h3><?= esc($pendingCount) ?></h3>
                     <p>pending users</p>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon"><i class="fas fa-user-check"></i></div>
                 <div class="stat-content">
-                    <h3>1,245</h3>
+                    <h3><?= esc($activeCount) ?></h3>
                     <p>active users</p>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon"><i class="fas fa-calendar-plus"></i></div>
                 <div class="stat-content">
-                    <h3>32</h3>
+                    <h3><?= esc($newTodayCount) ?></h3>
                     <p>new today</p>
                 </div>
             </div>
@@ -232,7 +232,7 @@
             <table id="usersTable" class="display" style="width:100%">
                 <thead>
                     <tr>
-                        <th style="display: none;">ID</th>
+                        <th >ID</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
@@ -254,7 +254,7 @@
 
 <script>
 $(document).ready(function() {
-    // initialize DataTable with server-side processing, pointing to YOUR backend URL
+
     var table = $('#usersTable').DataTable({
         processing: true,
         serverSide: true,
@@ -271,7 +271,7 @@ $(document).ready(function() {
             }
         },
         columns: [
-            { data: 0, visible: false  },                
+            { data: 0  },                
             { data: 1 },                
             { data: 2 },                
             { data: 3 },                
@@ -314,7 +314,7 @@ $(document).ready(function() {
                 }
             }
         ],
-        order: [[5, 'desc']],            // default sort by created_at desc
+        order: [[5, 'desc']],          
         pageLength: 10,
         lengthMenu: [5, 10, 25, 50],
         language: {
@@ -323,11 +323,11 @@ $(document).ready(function() {
         }
     });
 
-    // ---------- global functions for actions ----------
+ 
     window.updateUserStatus = function(userId, newStatus) {
         Swal.fire({
             title: 'Change status',
-            text: `Set user #${userId} to ${newStatus}?`,
+            text: `Set user  to ${newStatus}?`,
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: newStatus === 'approved' ? '#2e7d5e' : '#d26b6b',
@@ -337,7 +337,7 @@ $(document).ready(function() {
 
                 Swal.fire({
                     title: 'Updated',
-                    text: `User #${userId} status changed to ${newStatus} (demo)`,
+                    text: `User status changed to ${newStatus} `,
                     icon: 'success',
                     timer: 1500,
                     showConfirmButton: false
@@ -350,13 +350,38 @@ $(document).ready(function() {
 
     window.viewUser = function(userId) {
 
-        Swal.fire({
-            title: 'User details',
-            text: `Showing info for user #${userId} (implement as needed)`,
-            icon: 'info',
-            confirmButtonColor: '#3f6e9c'
-        });
-    };
+  
+
+    $.get('/admin/getUserById/' + userId, function(response) {
+  console.log(response);
+        if(response.status === 'success'){
+
+            let user = response.data;
+
+            Swal.fire({
+                title: 'User Details',
+                html: `
+                    <div style="text-align:left">
+                        <p><b>Name:</b> ${user.name}</p>
+                        <p><b>Email:</b> ${user.email}</p>
+                        <p><b>Phone:</b> ${user.phone}</p>
+                        <p><b>Address:</b> ${user.address}</p>
+                        <p><b>Status:</b> ${user.status}</p>
+                      
+                        <p><b>Created:</b> ${user.created_at}</p>
+                    </div>
+                `,
+                icon: 'info',
+                confirmButtonColor: '#3f6e9c'
+            });
+
+        }else{
+            Swal.fire('Error', 'User not found', 'error');
+        }
+
+    }, 'json');
+
+};
 });
 </script>
 

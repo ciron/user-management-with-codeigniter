@@ -20,6 +20,14 @@ class UserModel
         return !empty($results) ? $results[0] : null;
     }
 
+    public function getUserById($id)
+    {
+        $id = addslashes($id);
+        $sql = "SELECT id, name, email,address, phone,status, created_at FROM users WHERE id = '$id' LIMIT 1";
+        $results = $this->db->query($sql);
+        return !empty($results) ? $results[0] : null;
+    }
+
     private function escape($value)
     {
         return "'" . addslashes($value) . "'";
@@ -46,7 +54,7 @@ class UserModel
     {
         $sql = "SELECT id, name, email, phone, status, created_at FROM users";
 
-        $where = " WHERE role != 'admin'"; // Exclude admins from the list if desired
+        $where = " WHERE role != 'admin'";
         if (!empty($searchValue)) {
             $searchValue = addslashes($searchValue);
             $where .= " AND (name LIKE '%$searchValue%' OR email LIKE '%$searchValue%' OR phone LIKE '%$searchValue%')";

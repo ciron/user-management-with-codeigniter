@@ -105,6 +105,29 @@ class Admin extends BaseController
         return $this->response->setJSON(['status' => 'success', 'message' => 'User status updated to ' . $status]);
     }
 
+    public function getUserById($id)
+    {
+        $session = session();
+        if (!$session->get('isLoggedIn') || $session->get('userRole') !== 'admin') {
+            return $this->response->setJSON(['error' => 'Unauthorized']);
+        }
+
+        $model = new UserModel();
+        $user = $model->getUserById($id);
+
+        if (!$user) {
+            return $this->response->setJSON(['error' => 'User not found'])->setStatusCode(404);
+        }
+
+       return $this->response->setJSON([
+        'status' => 'success',
+        'data' => $user
+    ]);
+    }
+
+
+   
+
 
     public function adminLogout()
     {

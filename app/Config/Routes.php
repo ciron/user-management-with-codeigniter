@@ -28,6 +28,7 @@ $routes->get('/admin/dashboard', 'Admin::adminDashboard');
 
 
 
-$routes->get('/admin/logout', 'Auth::adminLogout');
+$routes->get('/admin/logout', 'Admin::adminLogout');
 $routes->get('/admin/getUsers', 'Admin::getUsers');
+$routes->get('/admin/getUserById/(:any)', 'Admin::getUserById/$1');
 $routes->post('/admin/updateStatus', 'Admin::updateStatus');
