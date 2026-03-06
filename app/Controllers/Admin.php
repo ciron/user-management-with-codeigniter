@@ -7,7 +7,7 @@ use App\Models\UserModel;
 class Admin extends BaseController
 {
 
-  
+
     public function adminDashboard()
     {
         $session = session();
@@ -28,6 +28,25 @@ class Admin extends BaseController
         return view('admin/adminDashboard', $data);
     }
 
+    public function userlist()
+    {
+        $session = session();
+        if (!$session->get('isLoggedIn') || $session->get('userRole') !== 'admin') {
+            return redirect()->to('/admin/login');
+        }
+
+        $model = new UserModel();
+
+        $data = [
+           
+            'pendingCount' => $model->getPendingUsersCount(),
+            'activeCount' => $model->getActiveUsersCount(),
+            'newTodayCount' => $model->getNewUsersTodayCount()
+        ];
+
+        return view('admin/userlist', $data);
+    }
+
     public function getUsers()
     {
         $session = session();
@@ -41,7 +60,7 @@ class Admin extends BaseController
         $search = $this->request->getVar('search')['value'] ?? '';
         $order = $this->request->getVar('order')[0] ?? null;
 
-        $columns = ['id', 'name', 'email', 'phone','address', 'status', 'created_at'];
+        $columns = ['id', 'name', 'email', 'phone', 'address', 'status', 'created_at'];
         $orderColumn = $order ? $columns[$order['column']] : 'created_at';
         $orderDir = $order ? $order['dir'] : 'desc';
 
@@ -105,14 +124,14 @@ class Admin extends BaseController
             return $this->response->setJSON(['error' => 'User not found'])->setStatusCode(404);
         }
 
-       return $this->response->setJSON([
-        'status' => 'success',
-        'data' => $user
-    ]);
+        return $this->response->setJSON([
+            'status' => 'success',
+            'data' => $user
+        ]);
     }
 
 
-   
+
 
 
     public function adminLogout()

@@ -14,7 +14,7 @@ class User extends BaseController
             return redirect()->to('/login');
         }
 
-        // Block non-user roles (e.g. admin)
+   
         if ($session->get('userRole') !== 'user') {
             return redirect()->to('/admin/dashboard');
         }
@@ -40,7 +40,6 @@ class User extends BaseController
             return redirect()->to('/login');
         }
 
-        // Block non-user roles (e.g. admin)
         if ($session->get('userRole') !== 'user') {
             return redirect()->to('/admin/dashboard');
         }
@@ -68,7 +67,7 @@ class User extends BaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'Unauthorized'])->setStatusCode(401);
         }
 
-        // Block non-user roles
+        
         if ($session->get('userRole') !== 'user') {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Forbidden'])->setStatusCode(403);
         }
@@ -80,7 +79,7 @@ class User extends BaseController
         $password = $this->request->getPost('password');
         $confirmPassword = $this->request->getPost('confirm_password');
 
-        // Validation
+      
         if (empty($name) || strlen($name) < 3) {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Name must be at least 3 characters long']);
         }
@@ -108,7 +107,6 @@ class User extends BaseController
             $model = new UserModel();
             $model->updateUserProfile($userId, $updateData);
 
-            // Update session data
             $session->set('userName', $name);
 
             return $this->response->setJSON([
