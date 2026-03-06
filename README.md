@@ -9,15 +9,20 @@ Before running this project, ensure you have the following installed:
 - [Composer](https://getcomposer.org/)
 - **ClickHouse** server running locally (or remotely)
 
-## Setup Instructions
+### 1. Clone the Repository
+Clone the project to your local machine:
+```bash
+git clone https://github.com/ciron/user-management-with-codeigniter.git
+cd ci4_project
+```
 
-### 1. Install Dependencies
+### 2. Install Dependencies
 Run the following command in the root project directory to install all PHP dependencies (including the ClickHouse driver):
 ```bash
 composer install
 ```
 
-### 2. Configure Environment
+### 3. Configure Environment
 Copy the `env` file to a new file named `.env`:
 ```bash
 cp env .env
@@ -27,7 +32,7 @@ Open the `.env` file and set your environment strictly to development to see err
 CI_ENVIRONMENT = development
 ```
 
-### 3. Configure Database Connection (ClickHouse)
+### 4. Configure Database Connection (ClickHouse)
 This project uses **ClickHouse** instead of MySQL. Therefore, the standard CodeIgniter `.env` database block is **NOT used**.
 
 Instead, database connection details are hardcoded as a service. Open `app/Libraries/ClickHouseService.php` and update the connection array to match your local or remote ClickHouse server:
@@ -42,20 +47,16 @@ $this->client = new Client([
 $this->client->database('ci4_clickhouse');
 ```
 
-### 3. Setup the ClickHouse Database
+### 5. Setup the ClickHouse Database
 
 1. Ensure your ClickHouse server is running.
 2. In your terminal or ClickHouse client, create the database:
    ```sql
    CREATE DATABASE IF NOT EXISTS ci4_clickhouse;
    ```
-3. Run the database test/creation script we have included in the `public/` directory. You can execute this from your browser or via CLI:
-   ```bash
-   php public/test_db.php
-   ```
-   *(This script will create the `users` table with the correct schema if it doesn't already exist.)*
+3. Import your `users` table schema manually into your ClickHouse instance or run your migrations.
 
-### 4. Start the Application Server
+### 6. Start the Application Server
 
 Start the CodeIgniter development server by running:
 ```bash
