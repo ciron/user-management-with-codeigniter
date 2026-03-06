@@ -1,69 +1,75 @@
-# CodeIgniter 4 Application Starter
+# User Management System (CI4 + ClickHouse)
 
-## What is CodeIgniter?
+This is a User Management System built using CodeIgniter 4, custom backend layouts, DataTables, and **ClickHouse** as the primary database.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+## Prerequisites
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+Before running this project, ensure you have the following installed:
+- PHP >= 8.2 with the following extensions enabled: `curl`, `mbstring`, `intl`, `json`
+- [Composer](https://getcomposer.org/)
+- **ClickHouse** server running locally (or remotely)
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+## Setup Instructions
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+### 1. Install Dependencies
+Run the following command in the root project directory to install all PHP dependencies (including the ClickHouse driver):
+```bash
+composer install
+```
 
-## Installation & updates
+### 2. Configure Environment
+Copy the `env` file to a new file named `.env`:
+```bash
+cp env .env
+```
+Open the `.env` file and set your environment strictly to development to see errors:
+```ini
+CI_ENVIRONMENT = development
+```
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+### 3. Configure Database Connection (ClickHouse)
+This project uses **ClickHouse** instead of MySQL. Therefore, the standard CodeIgniter `.env` database block is **NOT used**.
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+Instead, database connection details are hardcoded as a service. Open `app/Libraries/ClickHouseService.php` and update the connection array to match your local or remote ClickHouse server:
 
-## Setup
+```php
+$this->client = new Client([
+    'host' => '127.0.0.1',
+    'port' => 8123,
+    'username' => 'default',
+    'password' => 'admin', // Update your password here
+]);
+$this->client->database('ci4_clickhouse');
+```
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+### 3. Setup the ClickHouse Database
 
-## Important Change with index.php
+1. Ensure your ClickHouse server is running.
+2. In your terminal or ClickHouse client, create the database:
+   ```sql
+   CREATE DATABASE IF NOT EXISTS ci4_clickhouse;
+   ```
+3. Run the database test/creation script we have included in the `public/` directory. You can execute this from your browser or via CLI:
+   ```bash
+   php public/test_db.php
+   ```
+   *(This script will create the `users` table with the correct schema if it doesn't already exist.)*
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+### 4. Start the Application Server
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+Start the CodeIgniter development server by running:
+```bash
+php spark serve
+```
+By default, this will host the application at `http://localhost:8080/`.
 
-**Please** read the user guide for a better explanation of how CI4 works!
+## Accessing the Application
 
-## Repository Management
+- **Public Site / Signup:** `http://localhost:8080/`
+- **User Login:** `http://localhost:8080/login`
+- **User Dashboard:** `http://localhost:8080/user/dashboard`
+- **Admin Login:** `http://localhost:8080/admin/login`
+- **Admin Dashboard:** `http://localhost:8080/admin/dashboard`
+- **Admin User List (Datatable):** `http://localhost:8080/admin/userlist`
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
-
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
-
-## Server Requirements
-
-PHP version 8.2 or higher is required, with the following extensions installed:
-
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
-
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - The end of life date for PHP 8.1 was December 31, 2025.
-> - If you are still using below PHP 8.2, you should upgrade immediately.
-> - The end of life date for PHP 8.2 will be December 31, 2026.
-
-Additionally, make sure that the following extensions are enabled in your PHP:
-
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+*(Note: ClickHouse uses `8123` for HTTP, ensure it is available if connecting locally. To access the admin panel, you'll need an admin account in the `users` table `role = 'admin'`)*
