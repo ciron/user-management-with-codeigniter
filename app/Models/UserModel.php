@@ -42,6 +42,47 @@ class UserModel
         return $this->db->execute($sql);
     }
 
+    public function getUsersForDataTable($start, $length, $searchValue, $orderColumn, $orderDir)
+    {
+        $sql = "SELECT id, name, email, phone, status, created_at FROM users";
+
+        $where = " WHERE role != 'admin'"; // Exclude admins from the list if desired
+        if (!empty($searchValue)) {
+            $searchValue = addslashes($searchValue);
+            $where .= " AND (name LIKE '%$searchValue%' OR email LIKE '%$searchValue%' OR phone LIKE '%$searchValue%')";
+        }
+
+        $sql .= $where;
+        $sql .= " ORDER BY $orderColumn $orderDir";
+        $sql .= " LIMIT $start, $length";
+
+        return $this->db->query($sql);
+    }
+
+    public function countTotalUsers()
+    {
+        $sql = "SELECT count() as total FROM users WHERE role != 'admin'";
+        $result = $this->db->query($sql);
+        return $result[0]['total'] ?? 0;
+    }
+
+    public function countFilteredUsers($searchValue)
+    {
+        $sql = "SELECT count() as total FROM users WHERE role != 'admin'";
+        if (!empty($searchValue)) {
+            $searchValue = addslashes($searchValue);
+            $sql .= " AND (name LIKE '%$searchValue%' OR email LIKE '%$searchValue%' OR phone LIKE '%$searchValue%')";
+        }
+        $result = $this->db->query($sql);
+        return $result[0]['total'] ?? 0;
+    }
+
+    public function updateStatus($id, $status)
+    {
+        $sql = "ALTER TABLE users UPDATE status = '$status' WHERE id = '$id'";
+        return $this->db->execute($sql);
+    }
+
     private function generateUUID()
     {
         return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
