@@ -78,7 +78,6 @@ class Auth extends BaseController
         ]);
     }
 
-    // Only allow user role
     if ($user['role'] !== 'user') {
         return $this->response->setJSON([
             'status' => 'error',
@@ -123,39 +122,54 @@ class Auth extends BaseController
         return view('auth/adminlogin');
     }
 
-    public function adminAuthenticate()
-    {
-        $session = session();
-        $model = new UserModel();
-        $email = $this->request->getPost('email');
-        $password = $this->request->getPost('password');
+  public function adminAuthenticate()
+{
+    $session = session();
+    $model = new UserModel();
 
-        $user = $model->getUserByEmail($email);
+    $email = $this->request->getPost('email');
+    $password = $this->request->getPost('password');
 
-        if ($user) {
-            // Verify password
-            if (password_verify($password, $user['password'] ?? '')) {
-                // Verify role is admin
-                if (($user['role'] ?? '') !== 'admin') {
-                    return "Error: Unauthorized access. Admin role required.";
-                }
+    $user = $model->getUserByEmail($email);
 
+    if ($user) {
 
-                $ses_data = [
-                    'userId' => $user['id'],
-                    'userName' => $user['name'],
-                    'userEmail' => $user['email'],
-                    'userRole' => $user['role'],
-                    'isLoggedIn' => TRUE
-                ];
-                $session->set($ses_data);
+        // Verify password
+        if (password_verify($password, $user['password'] ?? '')) {
 
-                return redirect()->to('/admin/dashboard');
+            // Check admin role
+            if (($user['role'] ?? '') !== 'admin') {
+
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Unauthorized access. Admin role required.'
+                ]);
             }
-        }
 
-        return "Error: Invalid email or password.";
+            // Set session
+            $ses_data = [
+                'userId'     => $user['id'],
+                'userName'   => $user['name'],
+                'userEmail'  => $user['email'],
+                'userRole'   => $user['role'],
+                'isLoggedIn' => true
+            ];
+
+            $session->set($ses_data);
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Admin login successful',
+                'redirect' => '/admin/dashboard'
+            ]);
+        }
     }
+
+    return $this->response->setJSON([
+        'status' => 'error',
+        'message' => 'Invalid email or password'
+    ]);
+}
 
 
     
