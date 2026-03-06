@@ -13,13 +13,13 @@ Before running this project, ensure you have the following installed:
 Clone the project to your local machine:
 ```bash
 git clone https://github.com/ciron/user-management-with-codeigniter.git
-cd ci4_project
+
 ```
 
 ### 2. Install Dependencies
 Run the following command in the root project directory to install all PHP dependencies (including the ClickHouse driver):
 ```bash
-composer install
+composer install / composer update
 ```
 
 ### 3. Configure Environment
