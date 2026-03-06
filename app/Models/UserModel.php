@@ -108,7 +108,22 @@ class UserModel
 
     public function updateStatus($id, $status)
     {
+        $id = addslashes($id);
+        $status = addslashes($status);
         $sql = "ALTER TABLE users UPDATE status = '$status' WHERE id = '$id'";
+        return $this->db->execute($sql);
+    }
+
+    public function updateUserProfile($id, $data)
+    {
+        $id = addslashes($id);
+        $sets = [];
+        foreach ($data as $key => $value) {
+            $val = addslashes($value);
+            $sets[] = "$key = '$val'";
+        }
+        $setStr = implode(', ', $sets);
+        $sql = "ALTER TABLE users UPDATE $setStr WHERE id = '$id'";
         return $this->db->execute($sql);
     }
 

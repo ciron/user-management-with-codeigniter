@@ -76,7 +76,7 @@ class Auth extends BaseController
                 ];
                 $session->set($ses_data);
 
-                return redirect()->to('/dashboard');
+                return redirect()->to('user/dashboard');
             }
         }
 

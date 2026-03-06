@@ -15,7 +15,9 @@ $routes->get('/login', 'Auth::login');
 
 $routes->post('/login/authenticate', 'Auth::authenticate');
 
-$routes->get('/dashboard', 'User::dashboard');
+$routes->get('user/dashboard', 'User::dashboard');
+$routes->get('user/profile', 'User::profile');
+$routes->post('/user/updateProfile', 'User::updateProfile');
 
 $routes->get('/logout', 'User::logout');
 
