@@ -160,11 +160,13 @@ class Auth extends BaseController
         }
 
         $model = new UserModel();
-        // Just for example, we'll fetch some data if needed later
 
         $data = [
             'adminName' => $session->get('userName'),
-            'adminEmail' => $session->get('userEmail')
+            'adminEmail' => $session->get('userEmail'),
+            'pendingCount' => $model->getPendingUsersCount(),
+            'activeCount' => $model->getActiveUsersCount(),
+            'newTodayCount' => $model->getNewUsersTodayCount()
         ];
 
         return view('admin/adminDashboard', $data);

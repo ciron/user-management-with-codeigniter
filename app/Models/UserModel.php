@@ -77,6 +77,27 @@ class UserModel
         return $result[0]['total'] ?? 0;
     }
 
+    public function getPendingUsersCount()
+    {
+        $sql = "SELECT count() as total FROM users WHERE status = 'pending' AND role != 'admin'";
+        $result = $this->db->query($sql);
+        return $result[0]['total'] ?? 0;
+    }
+
+    public function getActiveUsersCount()
+    {
+        $sql = "SELECT count() as total FROM users WHERE status = 'approved' AND role != 'admin'";
+        $result = $this->db->query($sql);
+        return $result[0]['total'] ?? 0;
+    }
+
+    public function getNewUsersTodayCount()
+    {
+        $sql = "SELECT count() as total FROM users WHERE toDate(created_at) = today() AND role != 'admin'";
+        $result = $this->db->query($sql);
+        return $result[0]['total'] ?? 0;
+    }
+
     public function updateStatus($id, $status)
     {
         $sql = "ALTER TABLE users UPDATE status = '$status' WHERE id = '$id'";

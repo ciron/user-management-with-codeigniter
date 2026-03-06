@@ -24,10 +24,10 @@ $routes->get('/admin/login', 'Auth::adminLogin');
 
 $routes->post('/admin/login/authenticate', 'Auth::adminAuthenticate');
 
-$routes->get('/admin/dashboard', 'Auth::adminDashboard');
+$routes->get('/admin/dashboard', 'Admin::adminDashboard');
 
 
 
 $routes->get('/admin/logout', 'Auth::adminLogout');
-$routes->get('/admin/getUsers', 'Auth::getUsers');
-$routes->post('/admin/updateStatus', 'Auth::updateStatus');
+$routes->get('/admin/getUsers', 'Admin::getUsers');
+$routes->post('/admin/updateStatus', 'Admin::updateStatus');
