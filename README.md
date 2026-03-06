@@ -54,7 +54,11 @@ $this->client->database('ci4_clickhouse');
    ```sql
    CREATE DATABASE IF NOT EXISTS ci4_clickhouse;
    ```
-3. Import your `users` table schema manually into your ClickHouse instance or run your migrations.
+3. Import the `users` table schema by importing the SQL dump provided in the `public` directory:
+   ```bash
+   clickhouse-client -h 127.0.0.1 --port 9000 -d ci4_clickhouse -u default --password admin < public/users_202603061832.sql
+   ```
+   *(Alternatively, you can open `public/users_202603061832.sql` and run its contents in your preferred ClickHouse GUI client like DBeaver.)*
 
 ### 6. Start the Application Server
 

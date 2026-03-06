@@ -1,0 +1,10 @@
+INSERT INTO ci4_clickhouse.users (id,name,email,password,phone,address,`role`,status,created_at) VALUES
+	 ('3b1afe89-bc31-4a5c-8785-ef6263ab0933','System Admin','admin@admin.com','$2y$10$ApHaLnKxIz0OMZWmequI9emD1QsDbZnMl9jsp55bCF4JwKZ1wkDbm','0000000000','Admin HQ','admin','approved','2026-03-05 18:17:35'),
+	 ('63cd200f-d957-4f9f-82f7-6987dbae9021','System Admin','admin@example.com','$2y$10$1nfu6mT.BlOiI.eNrqxbp.PJAzsxi4XnqiKdZGSmMvhtzmOumrh2C','1234567890','Admin HQ','admin','approved','2026-03-05 16:48:55'),
+	 ('caddf949-c62c-4005-b764-129c3cdfe3bb','Chironjit Roy ','chiron.cse1998@gmail.com','$2y$12$dTS04mpsTtK.jiMcNiyf7.N5.ciHQH2LGeYkZvnKo4ZvMw/pv7VA6','01948451766','Mirpur 11.5, Block-A, House -160','user','approved','2026-03-05 17:42:28'),
+	 ('d30dc83d-7a57-4e6b-82d9-67f427fe4f48','Chironjit Roy','chiron.cse1998ss@gmail.com','$2y$12$JLsQIwa9WSO/IrbYMc6oV.JEa1W317GlS9MCNrqzeYIM13g59Y2KW','01948451766','Mirpur 11.5, Block-A, House -160','user','pending','2026-03-06 14:19:54'),
+	 ('acac9112-79f5-4a54-9a9e-e407a869b4fa','Chironjit Roy','chiron.cse199s8ss@gmail.com','$2y$12$Vu4Z6kA3qJO4K.wDPuSef.o/F1NsO77C86XjjEMhqpgJiey7C1ysO','01948451766','Mirpur 11.5, Block-A, House -160','user','rejected','2026-03-06 14:20:15'),
+	 ('cb56734a-e878-4e43-beac-dabb66c8d9e5','Chironjit Roy','chiron.cse199sss8@gmail.com','$2y$12$1n8GeCgANrfy7gRj3.f7jeMb4b711lUiZlM.PpUQO08Rki.bnmR8a','01948451766','Mirpur 11.5, Block-A, House -160','user','rejected','2026-03-06 14:22:15'),
+	 ('7ee71141-1c84-4945-999e-bd2fe393054d','Chironjit Roywqewq','chiron.cse199sssss8@gmail.com','$2y$12$cB4DZsuFogCWelO9p8uCx.2XLkEyLqP8Kk9ATr/FJcgcBqRJse5Iu','34324324324','wqewqe','user','pending','2026-03-06 14:25:48'),
+	 ('4c63187d-7a69-4f46-b4f3-55fe0fd76d5a','13243243','chiron.wewewcse1998@gmail.com','$2y$12$N8iypMyIwH3ffCP2WkAROeuCMVhv5CuvU0Prd5Rmfb0ItSQPYNH.e','3243243243211','134123421','user','pending','2026-03-06 18:00:21'),
+	 ('d08a5ce6-7a8d-4121-b984-425aba45b41c','Chironjit Roy','chiron.cse19sdsd98@gmail.com','$2y$12$l5/mwslrFhJ7YrS3n/ZKi.91MxY8UESfL5AjfNdayciVGTPTAtrRy','01948451766','Mirpur 11.5, Block-A, House -160','user','pending','2026-03-06 18:03:58');
