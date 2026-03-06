@@ -7,22 +7,7 @@ use App\Models\UserModel;
 class Admin extends BaseController
 {
 
-    public function dashboard()
-    {
-        $session = session();
-        if (!$session->get('isLoggedIn')) {
-            return redirect()->to('/login');
-        }
-
-        $data = [
-            'userName' => $session->get('userName'),
-            'userEmail' => $session->get('userEmail'),
-            'userRole' => $session->get('userRole')
-        ];
-
-        return view('auth/dashboard', $data);
-    }
-
+  
     public function adminDashboard()
     {
         $session = session();
