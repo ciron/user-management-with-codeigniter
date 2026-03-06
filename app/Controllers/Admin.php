@@ -38,7 +38,8 @@ class Admin extends BaseController
         $model = new UserModel();
 
         $data = [
-           
+            'adminName' => $session->get('userName'),
+            'adminEmail' => $session->get('userEmail'),
             'pendingCount' => $model->getPendingUsersCount(),
             'activeCount' => $model->getActiveUsersCount(),
             'newTodayCount' => $model->getNewUsersTodayCount()
@@ -61,8 +62,9 @@ class Admin extends BaseController
         $order = $this->request->getVar('order')[0] ?? null;
 
         $columns = ['id', 'name', 'email', 'phone', 'address', 'status', 'created_at'];
-        $orderColumn = $order ? $columns[$order['column']] : 'created_at';
-        $orderDir = $order ? $order['dir'] : 'desc';
+        $colIndex = $order ? (int)$order['column'] : 6; // default: created_at
+        $orderColumn = isset($columns[$colIndex]) ? $columns[$colIndex] : 'created_at';
+        $orderDir = ($order && strtolower($order['dir']) === 'asc') ? 'asc' : 'desc';
 
         $users = $model->getUsersForDataTable($start, $length, $search, $orderColumn, $orderDir);
         $total = $model->countTotalUsers();

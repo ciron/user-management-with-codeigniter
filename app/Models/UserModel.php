@@ -15,22 +15,16 @@ class UserModel
 
     public function getUserByEmail($email)
     {
-        $sql = "SELECT id, name, email, password, role, status FROM users WHERE email = " . $this->escape($email) . " LIMIT 1";
-        $results = $this->db->query($sql);
+        $sql = "SELECT id, name, email, password, role, status FROM users WHERE email = :email LIMIT 1";
+        $results = $this->db->query($sql, ['email' => $email]);
         return !empty($results) ? $results[0] : null;
     }
 
     public function getUserById($id)
     {
-        $id = addslashes($id);
-        $sql = "SELECT id, name, email,address, phone,status, created_at FROM users WHERE id = '$id' LIMIT 1";
-        $results = $this->db->query($sql);
+        $sql = "SELECT id, name, email, address, phone, status, created_at FROM users WHERE id = :id LIMIT 1";
+        $results = $this->db->query($sql, ['id' => $id]);
         return !empty($results) ? $results[0] : null;
-    }
-
-    private function escape($value)
-    {
-        return "'" . addslashes($value) . "'";
     }
 
     public function insertUser($data)
@@ -40,91 +34,90 @@ class UserModel
         }
 
         $columns = implode(', ', array_keys($data));
-        $values = implode(', ', array_map(function ($val) {
-            if (is_numeric($val) && !is_string($val))
-                return $val;
-            return "'" . addslashes($val) . "'";
-        }, array_values($data)));
+        $placeholders = ':' . implode(', :', array_keys($data));
 
-        $sql = "INSERT INTO users ($columns) VALUES ($values)";
-        return $this->db->execute($sql);
+        $sql = "INSERT INTO users ($columns) VALUES ($placeholders)";
+        return $this->db->execute($sql, $data);
     }
 
-    public function getUsersForDataTable($start, $length, $searchValue, $orderColumn, $orderDir)
-    {
-        $sql = "SELECT id, name, email, phone, address, status, created_at FROM users";
+  public function getUsersForDataTable($start, $length, $searchValue, $orderColumn, $orderDir)
+{
+    $start = (int) $start;
+    $length = (int) $length;
 
-        $where = " WHERE role != 'admin'";
-        if (!empty($searchValue)) {
-            $searchValue = addslashes($searchValue);
-            $where .= " AND (name LIKE '%$searchValue%' OR email LIKE '%$searchValue%' OR phone LIKE '%$searchValue%')";
-        }
+    $sql = "SELECT id, name, email, phone, address, status, created_at FROM users WHERE role != 'admin'";
 
-        $sql .= $where;
-        $sql .= " ORDER BY $orderColumn $orderDir";
-        $sql .= " LIMIT $length OFFSET $start";
-
-        return $this->db->query($sql);
+    if (!empty($searchValue)) {
+        $searchValue = addslashes($searchValue);
+        $sql .= " AND (name LIKE '%$searchValue%' OR email LIKE '%$searchValue%' OR phone LIKE '%$searchValue%')";
     }
+
+    $sql .= " ORDER BY $orderColumn $orderDir LIMIT $length OFFSET $start FORMAT JSON";
+
+    return $this->db->query($sql);
+}
 
     public function countTotalUsers()
     {
-        $sql = "SELECT count() as total FROM users WHERE role != 'admin'";
+        $sql = "SELECT count() AS total FROM users WHERE role != 'admin'";
         $result = $this->db->query($sql);
         return $result[0]['total'] ?? 0;
     }
 
     public function countFilteredUsers($searchValue)
     {
-        $sql = "SELECT count() as total FROM users WHERE role != 'admin'";
+        $sql = "SELECT count() AS total FROM users WHERE role != 'admin'";
+        $params = [];
+
         if (!empty($searchValue)) {
-            $searchValue = addslashes($searchValue);
-            $sql .= " AND (name LIKE '%$searchValue%' OR email LIKE '%$searchValue%' OR phone LIKE '%$searchValue%')";
+            $sql .= " AND (name LIKE :search OR email LIKE :search OR phone LIKE :search)";
+            $params['search'] = "%$searchValue%";
         }
-        $result = $this->db->query($sql);
+
+        $result = $this->db->query($sql, $params);
         return $result[0]['total'] ?? 0;
     }
 
     public function getPendingUsersCount()
     {
-        $sql = "SELECT count() as total FROM users WHERE status = 'pending' AND role != 'admin'";
+        $sql = "SELECT count() AS total FROM users WHERE status = 'pending' AND role != 'admin'";
         $result = $this->db->query($sql);
         return $result[0]['total'] ?? 0;
     }
 
     public function getActiveUsersCount()
     {
-        $sql = "SELECT count() as total FROM users WHERE status = 'approved' AND role != 'admin'";
+        $sql = "SELECT count() AS total FROM users WHERE status = 'approved' AND role != 'admin'";
         $result = $this->db->query($sql);
         return $result[0]['total'] ?? 0;
     }
 
     public function getNewUsersTodayCount()
     {
-        $sql = "SELECT count() as total FROM users WHERE toDate(created_at) = today() AND role != 'admin'";
+        $sql = "SELECT count() AS total FROM users WHERE toDate(created_at) = today() AND role != 'admin'";
         $result = $this->db->query($sql);
         return $result[0]['total'] ?? 0;
     }
 
     public function updateStatus($id, $status)
     {
-        $id = addslashes($id);
-        $status = addslashes($status);
-        $sql = "ALTER TABLE users UPDATE status = '$status' WHERE id = '$id'";
-        return $this->db->execute($sql);
+        $sql = "ALTER TABLE users UPDATE status = :status WHERE id = :id";
+        return $this->db->execute($sql, ['status' => $status, 'id' => $id]);
     }
 
     public function updateUserProfile($id, $data)
     {
-        $id = addslashes($id);
         $sets = [];
+        $params = ['id' => $id];
+
         foreach ($data as $key => $value) {
-            $val = addslashes($value);
-            $sets[] = "$key = '$val'";
+            $sets[] = "$key = :$key";
+            $params[$key] = $value;
         }
+
         $setStr = implode(', ', $sets);
-        $sql = "ALTER TABLE users UPDATE $setStr WHERE id = '$id'";
-        return $this->db->execute($sql);
+        $sql = "ALTER TABLE users UPDATE $setStr WHERE id = :id";
+        return $this->db->execute($sql, $params);
     }
 
     private function generateUUID()
