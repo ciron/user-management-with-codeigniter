@@ -31,7 +31,7 @@
     <h4>Welcome <?= session()->get('userName') ?? 'User' ?></h4>
     <a href="/user/dashboard"><i class="fas fa-home"></i> Dashboard</a>
     <a href="/user/profile"><i class="fas fa-user"></i> Profile</a>
-    <a href="/logout" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    <a href="/user/logout" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
 </div>
 
 <!-- MAIN CONTENT -->

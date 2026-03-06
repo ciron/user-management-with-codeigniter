@@ -616,6 +616,8 @@ $(document).ready(function() {
                         timer: 3000,
                         timerProgressBar: true
                     }).then(() => {
+
+                     location.reload();
                         // Update the displayed name in the header if it changed
                         if (response.newName) {
                             $('h2.display-6').text(response.newName);
