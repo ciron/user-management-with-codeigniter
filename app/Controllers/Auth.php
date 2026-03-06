@@ -16,7 +16,7 @@ class Auth extends BaseController
         return view('auth/signup');
     }
 
-    public function register()
+   public function register()
     {
         $rules = [
             'name' => 'required|min_length[3]|max_length[50]',
@@ -27,14 +27,20 @@ class Auth extends BaseController
         ];
 
         if (!$this->validate($rules)) {
-            return "Validation Error: " . implode(', ', $this->validator->getErrors());
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => implode(', ', $this->validator->getErrors())
+            ]);
         }
 
         $model = new UserModel();
 
-
+        // check existing email
         if ($model->getUserByEmail($this->request->getPost('email'))) {
-            return "Error: Email already registered.";
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Email already registered.'
+            ]);
         }
 
         $data = [
@@ -49,39 +55,66 @@ class Auth extends BaseController
 
         $model->insertUser($data);
 
-        return "Registration successful! Your account is pending admin approval. <a href='/login'>Go to Login</a>";
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => 'Registration successful! Your account is pending admin approval.'
+        ]);
     }
 
-    public function authenticate()
-    {
-        $session = session();
-        $model = new UserModel();
-        $email = $this->request->getPost('email');
-        $password = $this->request->getPost('password');
+   public function authenticate()
+{
+    $session = session();
+    $model = new UserModel();
 
-        $user = $model->getUserByEmail($email);
+    $email = trim($this->request->getPost('email'));
+    $password = $this->request->getPost('password');
 
-        if ($user) {
-            if (password_verify($password, $user['password'] ?? '')) {
-                if (($user['status'] ?? '') !== 'approved') {
-                    return "Error: Your account is pending approval.";
-                }
+    $user = $model->getUserByEmail($email);
 
-                $ses_data = [
-                    'userId' => $user['id'],
-                    'userName' => $user['name'],
-                    'userEmail' => $user['email'],
-                    'userRole' => $user['role'],
-                    'isLoggedIn' => TRUE
-                ];
-                $session->set($ses_data);
-
-                return redirect()->to('user/dashboard');
-            }
-        }
-
-        return "Error: Invalid email or password.";
+    if (!$user) {
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'Invalid email or password.'
+        ]);
     }
+
+    // Only allow user role
+    if ($user['role'] !== 'user') {
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'Only users can login here.'
+        ]);
+    }
+
+    if (!password_verify($password, $user['password'])) {
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'Invalid email or password.'
+        ]);
+    }
+
+    if ($user['status'] !== 'approved') {
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'Your account is pending admin approval.'
+        ]);
+    }
+
+    // Session create
+    $session->set([
+        'userId' => $user['id'],
+        'userName' => $user['name'],
+        'userEmail' => $user['email'],
+        'userRole' => $user['role'],
+        'isLoggedIn' => true
+    ]);
+
+    return $this->response->setJSON([
+        'status' => 'success',
+        'message' => 'Login successful',
+        'redirect' => '/user/dashboard'
+    ]);
+}
 
  
 

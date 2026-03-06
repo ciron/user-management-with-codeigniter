@@ -1,13 +1,17 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - User Management System</title>
-    <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.npmmirror.com/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - User Management System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         :root {
             --primary: #6366f1;
@@ -134,34 +138,86 @@
     </style>
 </head>
 <body>
-
 <div class="login-card">
-    <div class="brand-logo">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-        </svg>
-    </div>
-    
     <h2>Welcome back</h2>
     <p class="subtitle">Please enter your details to sign in</p>
-    
-    <form action="/login/authenticate" method="POST">
+
+    <form id="loginForm">
         <div class="mb-3">
-            <label for="email" class="form-label">Email Address</label>
-            <input type="email" name="email" id="email" class="form-control" placeholder="name@company.com" required>
+            <label>Email Address</label>
+            <input type="email" name="email" class="form-control" required>
         </div>
+
         <div class="mb-4">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" name="password" id="password" class="form-control" placeholder="••••••••" required>
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" required>
         </div>
-        
+
         <button type="submit" class="btn btn-primary">Sign in</button>
     </form>
-    
+
     <div class="footer-text">
         Don't have an account? <a href="/signup">Sign up</a>
     </div>
 </div>
+
+
+<script>
+$(document).ready(function(){
+
+    $("#loginForm").submit(function(e){
+
+        e.preventDefault();
+
+        let formData = $(this).serialize();
+
+        $.ajax({
+            url: "/login/authenticate",
+            type: "POST",
+            data: formData,
+            dataType: "json",
+
+            success:function(response){
+
+                if(response.status === "success"){
+
+                    Swal.fire({
+                        icon: "success",
+                        title: "Login Successful",
+                        text: response.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    setTimeout(function(){
+                        window.location.href = response.redirect;
+                    },1500);
+
+                }else{
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Login Failed",
+                        text: response.message
+                    });
+
+                }
+            },
+
+            error:function(){
+                Swal.fire({
+                    icon: "error",
+                    title: "Server Error",
+                    text: "Something went wrong."
+                });
+            }
+
+        });
+
+    });
+
+});
+</script>
 
 </body>
 </html>
