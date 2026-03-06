@@ -132,7 +132,7 @@
         table.dataTable thead th {
             background: #f3f8ff; color: #1d3a5c; font-weight: 600; border-bottom: 2px solid #ccddec;
         }
-        table.dataTable tbody td { padding: 16px 12px; color: #203141; }
+        table.dataTable tbody td { padding: 2px 2px; color: #203141; }
         .badge {
             font-weight: 500; padding: 5px 14px; border-radius: 40px; font-size: 0.8rem;
         }
@@ -142,7 +142,7 @@
 
         .action-btn {
             border: none; background: none; font-size: 0.8rem; font-weight: 500;
-            padding: 5px 12px; border-radius: 40px; transition: 0.1s; margin: 2px;
+            padding: 2px 2px; border-radius: 40px; transition: 0.1s; margin: 2px;
         }
         .btn-approve { background: #e0f2e5; color: #166534; }
         .btn-reject  { background: #fee7e7; color: #a13d3d; }
@@ -236,6 +236,7 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
+                        <th>Address</th>
                         <th>Status</th>
                         <th>Created</th>
                         <th>Actions</th>
@@ -255,74 +256,68 @@
 <script>
 $(document).ready(function() {
 
-    var table = $('#usersTable').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: '/admin/getUsers',      
-            type: 'GET',               
-            dataType: 'json',
-            error: function(xhr, error, thrown) {
-                console.log('DataTable error:', error);
-               
-                if (xhr.status === 403 || xhr.status === 401) {
-                    Swal.fire('Session expired', 'Please login again', 'error');
-                }
+   var table = $('#usersTable').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+        url: '/admin/getUsers',
+        type: 'GET',
+        dataType: 'json',
+        error: function(xhr, error, thrown) {
+            console.log('DataTable error:', error);
+            if (xhr.status === 403 || xhr.status === 401) {
+                Swal.fire('Session expired', 'Please login again', 'error');
+            }
+        }
+    },
+    columns: [
+        { data: 0 }, // ID
+        { data: 1 }, // Name
+        { data: 2 }, // Email
+        { data: 3 }, // Phone
+        { data: 4 }, // Address
+        { 
+            data: 5, // Status
+            render: function(data, type, row) {
+                if (!data) data = 'pending';
+                let cls = 'badge-pending';
+                if (data.toLowerCase() === 'approved') cls = 'badge-approved';
+                else if (data.toLowerCase() === 'rejected') cls = 'badge-rejected';
+                return `<span class="badge ${cls}">${data.charAt(0).toUpperCase() + data.slice(1)}</span>`;
             }
         },
-        columns: [
-            { data: 0  },                
-            { data: 1 },                
-            { data: 2 },                
-            { data: 3 },                
-            { 
-                data: 4,             
-                render: function(data) {
-                    if (!data) data = 'pending';
-                    let cls = 'badge-pending';
-                    if (data.toLowerCase() === 'approved') cls = 'badge-approved';
-                    else if (data.toLowerCase() === 'rejected') cls = 'badge-rejected';
-                    return `<span class="badge ${cls}">${data.charAt(0).toUpperCase() + data.slice(1)}</span>`;
-                }
-            },
-            { data: 5 },            
-            {
-                data: 0,       
-                render: function(data, type, row) {
-              
-                    const id = row[0];
-                    const status = (row[4] || 'pending').toLowerCase();
-                    
-              
-                    let buttons = '';
-                    
-                    if (status === 'pending') {
-                        buttons += `<button class="action-btn btn-approve" onclick="updateUserStatus('${id}','approved')"><i class="fas fa-check-circle"></i> Approve</button>`;
-                        buttons += `<button class="action-btn btn-reject" onclick="updateUserStatus('${id}','rejected')"><i class="fas fa-times-circle"></i> Reject</button>`;
-                        buttons += `<button class="action-btn btn-view" onclick="viewUser('${id}')"><i class="fas fa-eye"></i> View</button>`;
-                    } else if (status === 'approved') {
-                        buttons += `<button class="action-btn btn-reject" onclick="updateUserStatus('${id}','rejected')"><i class="fas fa-times-circle"></i> Reject</button>`;
-                        buttons += `<button class="action-btn btn-view" onclick="viewUser('${id}')"><i class="fas fa-eye"></i> View</button>`;
-                    } else if (status === 'rejected') {
-                        buttons += `<button class="action-btn btn-approve" onclick="updateUserStatus('${id}','approved')"><i class="fas fa-check-circle"></i> Approve</button>`;
-                        buttons += `<button class="action-btn btn-view" onclick="viewUser('${id}')"><i class="fas fa-eye"></i> View</button>`;
-                    } else {
-                        // fallback
-                        buttons += `<button class="action-btn btn-view" onclick="viewUser('${id}')"><i class="fas fa-eye"></i> View</button>`;
-                    }
-                    return buttons;
-                }
-            }
-        ],
-        order: [[5, 'desc']],          
-        pageLength: 10,
-        lengthMenu: [5, 10, 25, 50],
-        language: {
-            search: "_INPUT_",
-            searchPlaceholder: "Search users..."
-        }
-    });
+        { data: 6 }, // Created At
+        {
+            data: 0, // Actions
+            orderable: false,
+            searchable: false,
+            render: function(data, type, row) {
+                const id = row[0];
+                const status = (row[5] || 'pending').toLowerCase();
+                let buttons = '';
 
+                if (status === 'pending') {
+                    buttons += `<button class="action-btn btn-approve" onclick="updateUserStatus('${id}','approved')"><i class="fas fa-check-circle"></i> Approve</button>`;
+                    buttons += `<button class="action-btn btn-reject" onclick="updateUserStatus('${id}','rejected')"><i class="fas fa-times-circle"></i> Reject</button>`;
+                } else if (status === 'approved') {
+                    buttons += `<button class="action-btn btn-reject" onclick="updateUserStatus('${id}','rejected')"><i class="fas fa-times-circle"></i> Reject</button>`;
+                } else if (status === 'rejected') {
+                    buttons += `<button class="action-btn btn-approve" onclick="updateUserStatus('${id}','approved')"><i class="fas fa-check-circle"></i> Approve</button>`;
+                }
+
+                buttons += `<button class="action-btn btn-view" onclick="viewUser('${id}')"><i class="fas fa-eye"></i> View</button>`;
+                return buttons;
+            }
+        }
+    ],
+    order: [[6, 'desc']], // Sort by Created At
+    pageLength: 10,
+    lengthMenu: [5, 10, 25, 50],
+    language: {
+        search: "_INPUT_",
+        searchPlaceholder: "Search users..."
+    }
+});
  
     window.updateUserStatus = function(userId, newStatus) {
         Swal.fire({

@@ -41,7 +41,7 @@ class Admin extends BaseController
         $search = $this->request->getVar('search')['value'] ?? '';
         $order = $this->request->getVar('order')[0] ?? null;
 
-        $columns = ['id', 'name', 'email', 'phone', 'status', 'created_at'];
+        $columns = ['id', 'name', 'email', 'phone','address', 'status', 'created_at'];
         $orderColumn = $order ? $columns[$order['column']] : 'created_at';
         $orderDir = $order ? $order['dir'] : 'desc';
 
@@ -56,6 +56,7 @@ class Admin extends BaseController
                 $user['name'],
                 $user['email'],
                 $user['phone'],
+                $user['address'],
                 $user['status'],
                 $user['created_at'],
                 '' // For actions

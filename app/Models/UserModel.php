@@ -52,7 +52,7 @@ class UserModel
 
     public function getUsersForDataTable($start, $length, $searchValue, $orderColumn, $orderDir)
     {
-        $sql = "SELECT id, name, email, phone, status, created_at FROM users";
+        $sql = "SELECT id, name, email, phone, address, status, created_at FROM users";
 
         $where = " WHERE role != 'admin'";
         if (!empty($searchValue)) {
@@ -62,7 +62,7 @@ class UserModel
 
         $sql .= $where;
         $sql .= " ORDER BY $orderColumn $orderDir";
-        $sql .= " LIMIT $start, $length";
+        $sql .= " LIMIT $length OFFSET $start";
 
         return $this->db->query($sql);
     }
