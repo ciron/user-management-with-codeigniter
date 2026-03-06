@@ -5,7 +5,7 @@ This is a User Management System built using CodeIgniter 4, custom backend layou
 ## Prerequisites
 
 Before running this project, ensure you have the following installed:
-- PHP >= 8.2 with the following extensions enabled: `curl`, `mbstring`, `intl`, `json`
+- PHP >= 8.2 
 - [Composer](https://getcomposer.org/)
 - **ClickHouse** server running locally (or remotely)
 
@@ -58,7 +58,7 @@ $this->client->database('ci4_clickhouse');
    ```bash
    clickhouse-client -h 127.0.0.1 --port 9000 -d ci4_clickhouse -u default --password admin < public/users_202603061832.sql
    ```
-   *(Alternatively, you can open `public/users_202603061832.sql` and run its contents in your preferred ClickHouse GUI client like DBeaver.)*
+   *(Alternatively, you can open `public/users_202603061832.sql` )*
 
 ### 6. Start the Application Server
 
