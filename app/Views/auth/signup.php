@@ -139,6 +139,12 @@ $(document).ready(function(){
                         title: 'Success',
                         text: response.message,
                         confirmButtonColor: '#3085d6'
+                    }).then(() => {
+                        if (response.redirect) {
+                            window.location.href = response.redirect;
+                        } else {
+                            window.location.href = '/login';
+                        }
                     });
 
                     $("#signupForm")[0].reset();
